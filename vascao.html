@@ -1,0 +1,39 @@
+<html>
+<head>
+<style>
+* {box-sizing: border-box; margin: 0; padding: 0;}
+body {font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; padding: 2rem; background: #f0f2f5;}
+.card {max-width: 42rem; margin: 0 auto; background: white; border-radius: 0.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+.card-header {padding: 1.5rem; border-bottom: 1px solid #e5e7eb;}
+.card-title {font-size: 1.5rem; text-align: center; font-weight: bold; margin-bottom: 1rem;}
+.streak {text-align: right; font-size: 0.875rem;}
+.card-content {padding: 1.5rem;}
+.score {font-size: 1.125rem; font-weight: 500; margin-bottom: 1rem;}
+.question {font-size: 1.125rem; margin-bottom: 1.5rem;}
+.question-number {font-weight: bold;}
+.options {display: flex; flex-direction: column; gap: 0.5rem;}
+.button {display: block; width: 100%; padding: 0.75rem; border: none; border-radius: 0.375rem; background: #000; color: white; font-size: 1rem; cursor: pointer;}
+.button:hover {background: #333;}
+.button.correct {background: #22c55e;}
+.button.incorrect {background: #ef4444;}
+.alert {margin-top: 1rem; padding: 1rem; border-radius: 0.375rem;}
+.alert.correct {background: #dcfce7; color: #166534;}
+.alert.incorrect {background: #fee2e2; color: #991b1b;}
+.game-complete {text-align: center;}
+.trophy {font-size: 3rem; color: #eab308; margin-bottom: 1rem;}
+.result-message {font-size: 1.25rem; margin-bottom: 1rem;}
+</style>
+</head>
+<body>
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">Let's Play! ⚽</h1>
+        <div class="streak">Goal Streak: <span id="streak">0</span> ⚽</div>
+    </div>
+    <div class="card-content" id="gameContent"></div>
+</div>
+<script>
+const questions=[{type:"structure",question:"Volgano, which sentence correctly uses 'like + verb-ing' to express your passion for Vasco?",options:["I like watch Vasco da Gama matches","I am like watching Vasco da Gama matches","I like watching Vasco da Gama matches","I like to watch Vasco da Gama matches"],correct:2,explanation:"After 'like', we can use a verb with -ing (gerund) to talk about general preferences, especially ongoing activities like watching your favorite team play!"},{type:"context",question:"How would you respond to: 'What do you enjoy doing on match days?'",options:["I liking sing Vasco songs","I am like to support Vasco","I like to supporting Vasco","I like supporting Vasco at São Januário"],correct:3,explanation:"Using 'like + verb-ing' is perfect for expressing regular activities, like supporting your team at their home stadium."},{type:"combination",question:"Combine these Vasco fan activities using 'like':",options:["I like wear the jersey and cheering","I like wearing the black and white jersey and to cheer","I like to wear the black and white jersey and to cheering","I like wearing the black and white jersey and cheering for Vasco"],correct:3,explanation:"When combining activities about supporting Vasco, keep the same verb form throughout the sentence."},{type:"preferences",question:"Express your preference between these activities:",options:["I liking go to São Januário more than watch matches on TV","I like to go to São Januário more than watching matches on TV","I like going to São Januário more than watching matches on TV","I like going to São Januário more than to watch matches on TV"],correct:2,explanation:"When comparing activities, maintain the same verb form after 'like' and 'than'."}];class Game{constructor(){this.score=0;this.currentQuestion=0;this.streak=0;this.showResult=false;this.gameComplete=false;this.selectedAnswer=null;this.init()}init(){this.renderGame()}handleAnswer(e){this.selectedAnswer=e,this.showResult=!0,e===questions[this.currentQuestion].correct?(this.score++,this.streak++):this.streak=0,document.getElementById("streak").textContent=this.streak,this.renderGame()}nextQuestion(){this.showResult=!1,this.selectedAnswer=null,this.currentQuestion+1<questions.length?this.currentQuestion++:this.gameComplete=!0,this.renderGame()}restart(){this.score=0,this.currentQuestion=0,this.streak=0,this.showResult=!1,this.gameComplete=!1,this.selectedAnswer=null,document.getElementById("streak").textContent=this.streak,this.renderGame()}renderGame(){const e=document.getElementById("gameContent");this.gameComplete?e.innerHTML=this.renderGameComplete():e.innerHTML=this.renderQuestion()}renderQuestion(){const e=questions[this.currentQuestion];return`<div class="score">Score: ${this.score}/${questions.length}</div><div class="question"><span class="question-number">Question ${this.currentQuestion+1}:</span> ${e.question}</div><div class="options">${e.options.map((e,t)=>`<button class="button ${this.showResult&&this.selectedAnswer===t?t===e.correct?"correct":"incorrect":""}" onclick="game.handleAnswer(${t})" ${this.showResult?"disabled":""}>${e}${this.showResult&&this.selectedAnswer===t?t===e.correct?" ✓":" ✗":""}</button>`).join("")}</div>${this.showResult?`<div class="alert ${this.selectedAnswer===e.correct?"correct":"incorrect"}">${this.selectedAnswer===e.correct?`GOAL! ${this.streak>1?`⚽ ${this.streak} goals in a row!`:""}`:`Missed shot! The correct answer is: ${e.options[e.correct]}`}<br><strong>Explanation:</strong> ${e.explanation}</div><button class="button" onclick="game.nextQuestion()">Next Question</button>`:""}`}renderGameComplete(){const e=this.score/questions.length*100;let t;return t=100===e?"Perfect score! You're a true Vascaíno grammar champion! 🏆⚽":e>=75?"Great performance! Almost as impressive as Vasco's history! 🌟":e>=50?"Good effort! Keep practicing like Vasco trains! 👍":"Keep studying! Every Vasco victory starts with practice! 💪",`<div class="game-complete"><div class="trophy">🏆</div><h2 class="card-title">Game Complete!</h2><p class="result-message">Your final score: ${this.score}/${questions.length}</p><p class="result-message">${t}</p><button class="button" onclick="game.restart()">Play Again</button></div>`}}const game=new Game;
+</script>
+</body>
+</html>
